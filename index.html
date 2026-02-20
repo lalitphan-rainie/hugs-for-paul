@@ -5,108 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hugs for Paul</title>
     <style>
+        :root { --primary: #4CAF50; --bg: #f0fdf4; } /* Green theme for Robin Hood vibe */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #fff5f5;
+            background-color: var(--bg);
             text-align: center;
-            overflow: hidden;
         }
 
-        h1 { color: #ff4d6d; font-size: 2.5rem; }
-        
+        #lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid #81c784;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            width: 250px;
+            text-align: center;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        #main-content { display: none; }
+
         .card {
             background: white;
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
             max-width: 400px;
         }
 
         #hugBtn {
-            background-color: #ff4d6d;
+            background-color: var(--primary);
             color: white;
             border: none;
             padding: 20px 40px;
             font-size: 1.5rem;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.1s, background-color 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
         }
 
-        #hugBtn:hover { background-color: #ff758f; }
-        #hugBtn:active { transform: scale(0.95); }
-
-        #counter { font-size: 1.2rem; margin-top: 15px; color: #555; }
-        #message { margin-top: 20px; font-style: italic; color: #777; min-height: 50px; }
-
-        /* Floating Animation */
         .heart {
             position: absolute;
-            color: #ff4d6d;
-            font-size: 20px;
             pointer-events: none;
-            animation: floatUp 2s ease-out forwards;
+            animation: floatUp 1.5s ease-out forwards;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-300px); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>Hang in there, Paul! 🫂</h1>
-        <p>I heard your day was a bit rough. Click below for an unlimited supply of hugs.</p>
-        
+    <div id="lock-screen">
+        <h2>🔒 Private Access</h2>
+        <p>Enter the secret word to unlock Paul's Hugs:</p>
+        <input type="text" id="passInput" placeholder="Hint: Your codename? (make sure no one's looking!)">
+        <button class="btn" onclick="checkPass()">Unlock Hugs</button>
+        <p id="error" style="color: #d32f2f; display: none; margin-top: 10px;">Not quite! Try again.</p>
+    </div>
+
+    <div id="main-content" class="card">
+        <h1>For Paul 🫂</h1>
+        <p>Bad days don't stand a chance. Click for reinforcements!</p>
         <button id="hugBtn">Get a Hug</button>
-        <div id="counter">Hugs received: <span id="count">0</span></div>
-        <p id="message">"Click for a small boost of serotonin."</p>
+        <div id="counter" style="margin-top: 15px; font-weight: bold; color: #444;">Hugs: <span id="count">0</span></div>
+        <p id="message" style="font-style: italic; color: #666;"></p>
     </div>
 
     <script>
+        function checkPass() {
+            const rawInput = document.getElementById('passInput').value;
+            
+            // Logic: lowercase and remove ALL whitespace
+            const normalizedInput = rawInput.toLowerCase().replace(/\s+/g, '');
+            const SECRET = "robinhood"; 
+
+            if (normalizedInput === SECRET) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        // Handle 'Enter' key
+        document.getElementById('passInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPass();
+        });
+
+        // Hug Interaction
         let count = 0;
         const messages = [
-            "Otters hold hands when they sleep so they don't drift apart.",
-            "A group of bunnies is called a 'fluff'. (Probably).",
-            "Why did the scarecrow win an award? Because he was outstanding in his field!",
-            "You are doing a great job being Paul.",
-            "This button believes in you 100%.",
-            "Cows have 'best friends' and get stressed when separated.",
-            "I'm a website and even I think you're cool."
+            "Sending a massive bear hug your way!",
+            "You are doing better than you think.",
+            "This too shall pass, Paul!",
+            "You're a legend. Keep going.",
+            "100% chance of things getting better."
         ];
 
-        const btn = document.getElementById('hugBtn');
-        const countDisplay = document.getElementById('count');
-        const messageDisplay = document.getElementById('message');
-
-        btn.addEventListener('click', (e) => {
-            // Update counter
+        document.getElementById('hugBtn').addEventListener('click', (e) => {
             count++;
-            countDisplay.innerText = count;
+            document.getElementById('count').innerText = count;
+            document.getElementById('message').innerText = `"${messages[count % messages.length]}"`;
 
-            // Change message randomly
-            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-            messageDisplay.innerText = `"${randomMsg}"`;
-
-            // Create floating heart
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = (e.clientX - 10) + 'px';
-            heart.style.top = (e.clientY - 10) + 'px';
-            document.body.appendChild(heart);
-
-            // Remove heart after animation
-            setTimeout(() => { heart.remove(); }, 2000);
+            // Visual effect
+            const emoji = document.createElement('div');
+            emoji.className = 'heart';
+            emoji.innerHTML = '💚'; // Green heart for Robin Hood
+            emoji.style.left = e.clientX + 'px';
+            emoji.style.top = e.clientY + 'px';
+            document.body.appendChild(emoji);
+            setTimeout(() => emoji.remove(), 1500);
         });
     </script>
 </body>
