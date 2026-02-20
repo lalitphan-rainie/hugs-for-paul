@@ -87,7 +87,10 @@
     <div id="lock-screen">
         <h2>🔒 Private Access</h2>
         <p>Enter the secret word to unlock Paul's Hugs:</p>
-        <input type="text" id="passInput" placeholder="Hint: Your codename? (make sure no one's looking!)">
+        <p style="font-size: 0.9rem; color: #666; margin-top: -10px; margin-bottom: 15px;">
+            <i>Hint: Your codename? (make sure no one's looking!)</i>
+        </p>
+        <input type="text" id="passInput" placeholder="Enter codename...">
         <button class="btn" onclick="checkPass()">Unlock Hugs</button>
         <p id="error" style="color: #d32f2f; display: none; margin-top: 10px;">Not quite! Try again.</p>
     </div>
